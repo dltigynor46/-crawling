@@ -67,11 +67,26 @@ def search_products():
         # 쿠팡에서 상품 검색
         coupang_result = search_product('coupang', code)
 
-        # 검색 결과 DB에 저장
+        # 네이버와 쿠팡 검색 결과를 DB에 저장
         for item in naver_result:
             name = item['name']
             price = item['price']
             rating = item['rating']
             # 추출한 정보를 DB에 저장
             cursor = conn.cursor()
-            cursor.execute("INSERT INTO products (name, price, rating, site) VALUES (%s, %s, %s, 'naver')",
+            cursor.execute(
+                "INSERT INTO products (name, price, rating, site) VALUES (%s, %s, %s, 'naver')",
+                (name, price, rating)
+            )
+            conn.commit()
+
+        for item in coupang_result:
+            name = item['name']
+            price = item['price']
+            rating = item['rating']
+            cursor = conn.cursor()
+            cursor.execute(
+                "INSERT INTO products (name, price, rating, site) VALUES (%s, %s, %s, 'coupang')",
+                (name, price, rating)
+            )
+            conn.commit()
